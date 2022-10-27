@@ -31,7 +31,6 @@ folders.forEach((folder) => {
     dirs.forEach((dir) => {
       const paths = [folder, dir];
       if (isDirectory(...paths)) {
-        if (isExist(...paths, "README.md")) paths.push("README.md");
         markdown += `  - [${dir}](${normalizeLink(...paths)})\n`;
       }
     });
