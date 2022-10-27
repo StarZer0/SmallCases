@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "node treeCli.js",
     "test": "jest"
   },
   "repository": {
