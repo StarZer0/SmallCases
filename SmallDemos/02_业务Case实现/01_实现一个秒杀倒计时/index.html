@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更精确的秒杀倒计时</title>
+    <style>
+        .countdown {
+            display: flex;
+            height: 32px;
+            align-items: center;
+        }
+
+        .countdown__name {
+            display: inline-block;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown" id="performance-countdown">
+        <span class="countdown__name">Performance 倒计时:</span>
+        <span class="countdown__content">5:00</span>
+    </div>
+
+    <script>
+        // 当前时间和结束时间均需要从服务器获取，避免客户端篡改时间导致倒计时不准确
+        async function getServerTime() {
+            return {
+                current: new Date('2022/10/31 10:00:50').valueOf(),
+                end: new Date('2022/10/31 10:05:00').valueOf()
+            }
+        }
+
+        function formatCountdown(time) {
+            const min = Math.floor(time / 1000 / 60);
+            const sec = Math.floor((time - min * 60 * 1000) / 1000);
+
+            const padLeft = val => ('00' + val).slice(-2);
+
+            return `${padLeft(min)}:${padLeft(sec)}`
+        }
+
+        // 使用performance.now() 方法来计算时间偏移量，避免客户端修改时间导致倒计时不准确
+        async function initialCountdown() {
+            const {current, end} = await getServerTime();
+            const offsetTime = end - current;
+            let start = performance.now();
+
+            setInterval(() => {
+                let now = performance.now();
+                const offset = now - start;
+                
+                document.querySelector('#performance-countdown .countdown__content').innerHTML = formatCountdown(offsetTime - offset)
+            })
+        }
+
+        initialCountdown();
+    </script>
+</body>
+</html>
